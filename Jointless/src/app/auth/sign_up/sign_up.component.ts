@@ -4,6 +4,7 @@ import { Component, inject, signal } from "@angular/core";
 
 @Component({
     templateUrl: 'sign_up.component.html',
+    styleUrl: '../login/login.css'
 })
 
 export class SignUpComponent{
