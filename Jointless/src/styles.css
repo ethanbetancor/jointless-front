@@ -1,6 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
-
+:root {
+  --border: 214 32% 91%;
+  --ring: 222 84% 55%;
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+}
 /* html,body{
     @apply bg-slate-900 text-white;
 }
