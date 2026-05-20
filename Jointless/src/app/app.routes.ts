@@ -17,4 +17,11 @@ export const routes: Routes = [
             return 'login';
         },
     }
+import { SignUpComponent } from './sign_up/sign_up.component';
+
+export const routes: Routes = [
+    {
+        path: 'register',
+        component: SignUpComponent
+    },
 ];

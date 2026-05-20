@@ -1,0 +1,42 @@
+<h1>Register</h1>
+<div>
+    <label>User:</label>
+    <input
+        type="text"
+        [value]="username()"
+        (input)="username.set(usernameValue.value)"
+        required
+        #usernameValue>
+    <br><br>
+
+    <label>E-Mail:</label>
+    <input
+        type="email" 
+        [value]="email()"
+        (input)="email.set(emailValue.value)"
+        required
+        #emailValue>
+    <br><br>
+    
+    <label>Password:</label>
+    <input
+        type="password"
+        [value]="password()"
+        (input)="password.set(passwValue.value)"
+        required
+        #passwValue>
+    <br><br>
+
+    <label>Confirm Password:</label>
+    <input
+        type="password"
+        [value]="confirmPasswd()"
+        (input)="confirmPasswd.set(confirmPasswdValue.value)"
+        required
+        #confirmPasswdValue>
+    <br><br>
+
+    <button (click)="sendValues()">Submit</button>
+</div>
+
+
