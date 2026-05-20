@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { Login } from './auth/login/login';
 import { ChangePassword } from './auth/change-password/change-password';
 import { SignUpComponent } from './auth/sign_up/sign_up.component';
-
+import { Home } from './home/home/home';
 
 export const routes: Routes = [
     {
@@ -16,6 +16,10 @@ export const routes: Routes = [
     {
         path: 'register',
         component: SignUpComponent
+    },
+    {
+        path: 'home',
+        component: Home
     },
     {
         path: '**',
