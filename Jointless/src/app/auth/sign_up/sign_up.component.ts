@@ -46,8 +46,9 @@ export class SignUpComponent {
 
             this.http.post<ResponseSucceed>('/register', body).subscribe({
                 next: (response) => { 
+                    //alert(response.message)
                     alert('Usuario registrado correctamente');
-                    this.route.navigateByUrl('../login/login.ts');
+                    this.route.navigateByUrl('home');
                 },
                 error: (error) => {
                     if (error.status === 409) {
