@@ -4,14 +4,29 @@
           <h1 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido</h1>
           <p class="text-gray-600">Inicia sesión en tu cuenta</p>
         </div>
-        <form class="space-y-6" >
+        <form class="space-y-6" (ngSubmit)="sendValues()" >
+            <div>
+                @if (errorMessage()) {
+                    <p>
+                        {{ errorMessage() }}
+                    </p>
+                }
+            </div>
             <div>
                 <label htmlFor="email" class="block text-sm font-medium text-gray-700 mb-2">
                     Correo electrónico
                 </label>
-                <input id="email" type="email"
+                <input id="email" type="email" name="email"
+                    [value]="email()"
+                    [ngModel]="email()"
+                    [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="email.set($event)"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    placeholder="tu@email.com" required/>
+                    placeholder="tu@email.com" required
+                    #emailInput="ngModel">
+                    @if (emailInput.invalid && emailInput.touched) {
+                        <p>El email es obligatorio</p>
+                    }
             </div>
             <div>
                 <label htmlFor="password" class="block text-sm font-medium text-gray-700 mb-2">
@@ -19,8 +34,17 @@
                 </label>
                 <div class="relative">
                     <input id="password" [type]="changeType?'password':'text'"
+                        [value]="password()"
+                        [ngModel]="password()"
+                        [ngModelOptions]="{standalone: true}"
+                        (ngModelChange)="password.set($event)"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12"
-                        placeholder="••••••••" required/>
+                        placeholder="••••••••" required
+                        minlength="1"
+                        #passwordInput="ngModel">
+                        @if (passwordInput.invalid && passwordInput.touched) {
+                            <p>La contraseña es obligatoria</p>
+                        }
                     <button type="button" class="eyeicon" (click)="viewPassword()">
                         <i [ngClass]="visible?'fa fa-eye':'fa fa-eye-slash'"></i>
                     </button>
@@ -36,14 +60,16 @@
                 </a>
             </div> -->
 
-            <button type="submit"
+            <!-- type="submit" -->
+            <button 
+                type="submit"
                 class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium">
                 Iniciar sesión
             </button>
         </form>
         <div class="mt-6 text-center">
           <p class="text-gray-600">
-            <a class="text-blue-600 hover:text-blue-700 font-medium" routerLinkActive="text-blue-500 underline" routerLink="/login">¿No tienes cuenta?</a>
+            <a class="text-blue-600 hover:text-blue-700 font-medium" routerLinkActive="text-blue-500 underline" routerLink="/register">¿No tienes cuenta?</a>
           </p>
         </div>
     </div>

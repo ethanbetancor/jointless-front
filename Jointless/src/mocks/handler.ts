@@ -8,11 +8,23 @@ export const handlers = [
 
         const values = await request.json();
 
-        console.log("Datos recividos", values);
+        console.log("Datos recibidos", values);
 
         return HttpResponse.json({
             success: true,
             message: 'Usuario registrado'
+        });
+    }),
+    http.post('/users/login', async( {request} ) =>{
+
+
+        const values = await request.json();
+
+        console.log("Datos recibidos", values);
+
+        return HttpResponse.json({
+            success: true,
+            message: 'Usuario identificado'
         });
     })
 ];

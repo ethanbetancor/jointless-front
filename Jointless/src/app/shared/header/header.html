@@ -1,1 +1,16 @@
-<p>header works!</p>
+<header className="bg-white shadow-sm border-b border-gray-200">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <nav class="w-full flex items-center justify-end px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-300 text-white  hover:from-indigo-700 hover:to-indigo-400 transition shadow-lg">
+                <a class="flex items-center gap-2 px-4 py-2 text-black hover:text-gray-900 hover:bg-gray-100 rounded-lg transition" 
+                    routerLinkActive="text-blue-500 underline" routerLink="/history">Historial</a>
+                <a class="flex items-center gap-2 px-4 py-2 text-black hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"  
+                    routerLinkActive="text-blue-500 underline" routerLink="/user">Usuario</a>
+                <a class="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition" 
+                  routerLinkActive="text-blue-500 underline" routerLink="/logout">Salir</a>
+              </nav>
+            </div>
+        </div>
+    </div>
+</header>
