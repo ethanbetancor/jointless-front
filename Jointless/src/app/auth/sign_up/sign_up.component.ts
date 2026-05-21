@@ -1,6 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, inject, signal } from "@angular/core";
 import { FormsModule } from '@angular/forms';
+import { Router } from "@angular/router";
+
+interface ResponseSucceed{
+    success: boolean,
+    message: string
+}
 
 
 @Component({
@@ -21,6 +27,7 @@ export class SignUpComponent {
     confirmPasswdError = signal('');
 
     private http = inject(HttpClient);
+    private route = inject(Router);
 
     sendValues() {
         const validPassword = this.validatePassword();
@@ -37,8 +44,16 @@ export class SignUpComponent {
 
             console.log(body);
 
-            this.http.post('/register', body).subscribe({
-                next: (response) => { console.log(response) }
+            this.http.post<ResponseSucceed>('/register', body).subscribe({
+                next: (response) => { 
+                    alert('Usuario registrado correctamente');
+                    this.route.navigateByUrl('../login/login.ts');
+                },
+                error: (error) => {
+                    if (error.status === 409) {
+                    alert('Ese usuario ya está registrado');
+                    }
+                }
             });
         }
     }
