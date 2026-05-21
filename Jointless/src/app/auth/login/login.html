@@ -20,7 +20,7 @@
                     [value]="email()"
                     [ngModel]="email()"
                     [ngModelOptions]="{standalone: true}"
-                    (ngModelChange)="email.set(email())"
+                    (ngModelChange)="email.set($event)"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                     placeholder="tu@email.com" required
                     #emailInput="ngModel">
@@ -37,7 +37,7 @@
                         [value]="password()"
                         [ngModel]="password()"
                         [ngModelOptions]="{standalone: true}"
-                        (ngModelChange)="password.set(password())"
+                        (ngModelChange)="password.set($event)"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12"
                         placeholder="••••••••" required
                         minlength="1"

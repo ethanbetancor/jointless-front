@@ -37,8 +37,8 @@ export class Login implements OnInit{
   email = signal('');
 
     sendValues(){
-        
-        if ( this.email.length==0 || this.password.length==0){
+
+        if ( !this.email()|| !this.password()){
           this.errorMessage.set("Completa todos los campos");
           return;
         }
@@ -47,6 +47,8 @@ export class Login implements OnInit{
             email: this.email(),
             password: this.password()
         }
+
+        console.log(this.email());
 
         console.log(body);
 
