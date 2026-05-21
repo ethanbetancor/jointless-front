@@ -3,6 +3,7 @@ import { Login } from './auth/login/login';
 import { ChangePassword } from './auth/change-password/change-password';
 import { SignUpComponent } from './auth/sign_up/sign_up.component';
 import { Home } from './home/home/home';
+import { User } from './home/user/user';
 
 export const routes: Routes = [
     {
@@ -20,6 +21,10 @@ export const routes: Routes = [
     {
         path: 'home',
         component: Home
+    },
+    {
+        path: 'user',
+        component: User
     },
     {
         path: '**',
