@@ -37,6 +37,12 @@ export class Login implements OnInit{
   email = signal('');
 
     sendValues(){
+        
+        if ( this.email.length==0 || this.password.length==0){
+          this.errorMessage.set("Completa todos los campos");
+          return;
+        }
+
         const body = {
             email: this.email(),
             password: this.password()
