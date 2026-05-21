@@ -48,19 +48,12 @@ export class Login implements OnInit{
             password: this.password()
         }
 
-        console.log(this.email());
-
-        console.log(body);
-
         this.http.post<LoginResponse>
           ('/users/login', body).subscribe({
             next: (response) => {
-              if (response.success){
-                this.router.navigateByUrl('/home');
-              }else{
-                this.errorMessage.set('Usuario o contraseña incorrectos');
-              }
-            }, error: ()=>{
+              this.router.navigateByUrl('/home');
+            }, error: (error)=>{
+              if (error.status === 404)this.errorMessage.set('Usuario o contraseña incorrectos');
               this.errorMessage.set('Error del servidor');
             }
         });

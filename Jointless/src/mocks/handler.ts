@@ -26,5 +26,17 @@ export const handlers = [
             success: true,
             message: 'Usuario identificado'
         });
+    }),
+    http.post('/users/change-password', async( {request} ) =>{
+
+
+        const values = await request.json();
+
+        console.log("Datos recibidos", values);
+
+        return HttpResponse.json({
+            success: true,
+            message: 'Contraseña cambiada'
+        });
     })
 ];

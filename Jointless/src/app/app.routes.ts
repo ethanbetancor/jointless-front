@@ -20,9 +20,9 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        component: Home
+        component: Home,
     },
-    {
+    { 
         path: 'user',
         component: User
     },
