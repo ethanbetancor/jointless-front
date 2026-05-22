@@ -2,10 +2,14 @@ import { HttpClient } from "@angular/common/http";
 import { Component, inject, signal } from "@angular/core";
 import { FormsModule } from '@angular/forms';
 import { Router } from "@angular/router";
+import { JSEncrypt } from 'jsencrypt';
 
-interface ResponseSucceed{
+interface ResponseSucceed {
     success: boolean,
     message: string
+}
+interface PublicKey {
+    publicKey: string
 }
 
 
@@ -36,26 +40,31 @@ export class SignUpComponent {
         const validConfPassw = this.validateConfirmPassw();
 
         if (validPassword && validEmail && validUsername && validConfPassw) {
-            const body = {
-                user: this.username(),
-                passw: this.password(),
-                email: this.email()
-            }
+            this.http.get<PublicKey>('http://localhost:8080/keys/public').subscribe({
+                next: (key) => {
+                    const encryptor = new JSEncrypt();
+                    encryptor.setPublicKey(key.publicKey);
+                    const body = {value: encryptor.encrypt(this.email() + ":" + this.username() + ":" + this.password())}
 
-            console.log(body);
+                    this.http.post<ResponseSucceed>('http://localhost:8080/users/register', body).subscribe({
+                        next: (response) => {
 
-            this.http.post<ResponseSucceed>('/register', body).subscribe({
-                next: (response) => { 
-                    //alert(response.message)
-                    alert('Usuario registrado correctamente');
-                    this.route.navigateByUrl('home');
-                },
-                error: (error) => {
-                    if (error.status === 409) {
-                    alert('Ese usuario ya está registrado');
-                    }
+                            alert(response.message);
+                            this.route.navigateByUrl('login');
+                        },
+                        error: (error) => {
+                            if (error.status === 409) {
+                                alert('Ese usuario ya está registrado');
+                            }
+                        }
+                    });
                 }
+
             });
+
+
+
+
         }
     }
 
@@ -84,7 +93,7 @@ export class SignUpComponent {
         this.emailError.set('');
         return true;
     }
-    
+
     validatePassword(): boolean {
         const passwordValue = this.password();
         if (passwordValue.length < 4) {
@@ -96,21 +105,21 @@ export class SignUpComponent {
             this.passwordError.set('La contraseña debe incluir 1 número');
             return false;
         }
-        if(passwordValue!=this.confirmPasswd()) return false
+        if (passwordValue != this.confirmPasswd()) return false
         this.passwordError.set('');
         return true;
     }
 
-    validateConfirmPassw(){
+    validateConfirmPassw() {
         const confPasswordValue = this.confirmPasswd();
 
-        if(this.password()!=""&&this.password()!=confPasswordValue){
+        if (this.password() != "" && this.password() != confPasswordValue) {
             this.confirmPasswdError.set('Las contraseñas no coinciden');
             return false;
         }
         this.confirmPasswdError.set('');
         return true;
     }
-    
-    
+
+
 }
