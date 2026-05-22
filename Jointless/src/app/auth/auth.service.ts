@@ -50,7 +50,7 @@ export class AuthService {
 
                 if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');
 
-                return this.http.put(`${this.url}/users/change-password`,bodyEncrypted);
+                return this.http.put(`${this.url}/users/change-password`,jsonBody);
             })
         );
     }
