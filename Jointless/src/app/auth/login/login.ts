@@ -2,12 +2,14 @@ import { ChangeDetectionStrategy, inject, Component, OnInit , signal } from '@an
 import { Title , Meta} from '@angular/platform-browser';
 import { RouterLink, RouterLinkActive, Router } from "@angular/router";
 import { NgClass } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { HttpClient } from "@angular/common/http";
+import { switchMap } from "rxjs";
+import { JSEncrypt } from 'jsencrypt';
 
-interface LoginResponse{
-  success: boolean;
-  message: string;
+interface KeyResponse{
+    publicKey: string;
 }
 
 @Component({
@@ -28,8 +30,11 @@ export class Login implements OnInit{
     this.changeType= !this.changeType;
   }
 
-  private http = inject(HttpClient);
   private router = inject(Router); 
+  private authService = inject(AuthService);
+  private http = inject(HttpClient);
+
+  private url = 'http://localhost:8080';
 
   errorMessage = signal('');
 
@@ -43,20 +48,32 @@ export class Login implements OnInit{
           return;
         }
 
-        const body = {
-            email: this.email(),
-            password: this.password()
-        }
-
-        this.http.post<LoginResponse>
-          ('/users/login', body).subscribe({
-            next: (response) => {
-              this.router.navigateByUrl('/home');
-            }, error: (error)=>{
-              if (error.status === 404)this.errorMessage.set('Usuario o contraseña incorrectos');
-              this.errorMessage.set('Error del servidor');
+        this.authService.loginEncrypter(this.email(),this.password()).subscribe({
+          next: (response) =>{
+            localStorage.setItem('username',response.username);
+            const result = ()=>{
+              this.http.get<KeyResponse>(`${this.url}/keys/public`)
+                .pipe(switchMap((publicKeyResponse)=>{
+                  const encrypter = new JSEncrypt();
+            
+                  encrypter.setPublicKey(publicKeyResponse.publicKey);
+            
+                  const bodyEncrypted = encrypter.encrypt(this.email()+':'+this.password());
+            
+                  if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');
+            
+                  localStorage.setItem('credentials', bodyEncrypted);
+                  return bodyEncrypted;
+                  })
+                );
             }
-        });
+            alert(response.message);
+            this.router.navigateByUrl('/home');
+          }, error: (error)=>{
+            if (error.status === 404)this.errorMessage.set('Usuario o contraseña incorrectos');
+            this.errorMessage.set('Error del servidor');
+          }
+        })
     }
 
   private title=inject(Title);
