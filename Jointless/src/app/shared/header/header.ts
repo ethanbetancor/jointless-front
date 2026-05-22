@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -8,6 +8,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
-export  class Header {
-  // comprobar el user para pone su nombre en la cabecera
+export  class Header implements OnInit{
+  userName = signal('');
+
+  ngOnInit(): void {
+    const localStorageUsername = localStorage.getItem('username');
+    this.userName.set(localStorageUsername ||'Invitado');
+  }
 }
