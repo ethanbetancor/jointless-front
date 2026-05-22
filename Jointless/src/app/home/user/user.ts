@@ -1,18 +1,13 @@
 import { ChangeDetectionStrategy, inject, Component, OnInit , signal } from '@angular/core';
 import { Title , Meta} from '@angular/platform-browser';
-import { Router } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { NgClass } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
 import { FormsModule } from '@angular/forms';
-
-interface ChangePasswordResponse{
-  success: boolean;
-  message: string;
-}
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'user',
-  imports: [NgClass, FormsModule],
+  imports: [NgClass, FormsModule, RouterLink, RouterLinkActive],
   templateUrl: './user.html',
   styleUrl: './user.css',
   standalone: true,
@@ -27,7 +22,7 @@ export class User  implements OnInit{
     this.changeType= !this.changeType;
   }
   
-    private http = inject(HttpClient);
+    private authService = inject(AuthService);
     private router = inject(Router); 
   
     errorMessage = signal('');
@@ -40,30 +35,36 @@ export class User  implements OnInit{
             this.errorMessage.set("Completa todos los campos");
             return;
           }
-  
-          const body = {
-            passwordNew: this.passwordNew()
+
+          const passwordValue = this.passwordNew();
+          if (passwordValue.length < 4) {
+              this.errorMessage.set('La contraseña debe tener mínimo 4 caracteres');
+              return;
           }
-  
-          this.http.post<ChangePasswordResponse>
-            ('/users/change-password', body).subscribe({
-              next: (response) => {
-                alert("Contraseña cambiada correctamente")
-                this.router.navigateByUrl('/home');
-              }, error: (error)=>{
-                if (error.status === 404)this.errorMessage.set('Usuario o contraseña incorrectos');
-                this.errorMessage.set('Error del servidor');
-              }
-          });
+          if (!/\d/.test(passwordValue)) {
+              this.errorMessage.set('La contraseña debe incluir 1 número');
+              return;
+          }
+          this.errorMessage.set('');
+          
+        this.authService.passwordEncrypter(this.passwordNew()).subscribe({
+          next: (response) =>{
+            alert("Contraseña cambiada correctamente");
+            this.router.navigateByUrl('/home');
+          }, error: (error)=>{
+            if (error.status === 404)this.errorMessage.set('La contraseña nueva es la misma que la antigua');
+            this.errorMessage.set('Error del servidor');
+          }
+        })
       }
   
     private title=inject(Title);
     private meta=inject(Meta);
   
     ngOnInit(): void {
-      this.title.setTitle('Login');
-      this.meta.updateTag({name:'description',content:'Este es mi Login'});
-      this.meta.updateTag({name:'og:title',content:'Login'});
-      this.meta.updateTag({name:'keywords',content:'Jointless,Proyecto,Metrica,Login'});
+      this.title.setTitle('User');
+      this.meta.updateTag({name:'description',content:'Este es mi User'});
+      this.meta.updateTag({name:'og:title',content:'User'});
+      this.meta.updateTag({name:'keywords',content:'Jointless,Proyecto,Metrica,User'});
     }
 }
