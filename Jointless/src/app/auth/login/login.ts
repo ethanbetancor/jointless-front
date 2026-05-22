@@ -48,32 +48,32 @@ export class Login implements OnInit{
           return;
         }
 
-        this.authService.loginEncrypter(this.email(),this.password()).subscribe({
-          next: (response) =>{
-            localStorage.setItem('username',response.username);
-            const result = ()=>{
+        this.authService.loginEncrypter(this.email(), this.password()).subscribe({
+            next: (response) => {
+              localStorage.setItem('username', response.username);
               this.http.get<KeyResponse>(`${this.url}/keys/public`)
-                .pipe(switchMap((publicKeyResponse)=>{
-                  const encrypter = new JSEncrypt();
-            
-                  encrypter.setPublicKey(publicKeyResponse.publicKey);
-            
-                  const bodyEncrypted = encrypter.encrypt(this.email()+':'+this.password());
-            
-                  if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');
-            
-                  localStorage.setItem('credentials', bodyEncrypted);
-                  return bodyEncrypted;
-                  })
-                );
+                .subscribe({
+                  next: (publicKeyResponse) => {
+                    const encrypter = new JSEncrypt();
+                    encrypter.setPublicKey(publicKeyResponse.publicKey);
+                    const bodyEncrypted =
+                      encrypter.encrypt(this.email() + ':' + this.password());
+                    if (!bodyEncrypted) throw new Error('No se puede encriptar');
+                    localStorage.setItem('credentials', bodyEncrypted);
+                    alert(response.message);
+                    this.router.navigateByUrl('/home');
+                  }, error: () => {
+                    this.errorMessage.set('Error obteniendo clave pública');
+                  }
+                });
+            }, error: (error) => {
+              if (error.status === 404) {
+                this.errorMessage.set('Usuario o contraseña incorrectos');
+              } else {
+                this.errorMessage.set('Error del servidor');
+              }
             }
-            alert(response.message);
-            this.router.navigateByUrl('/home');
-          }, error: (error)=>{
-            if (error.status === 404)this.errorMessage.set('Usuario o contraseña incorrectos');
-            this.errorMessage.set('Error del servidor');
-          }
-        })
+          });
     }
 
   private title=inject(Title);
