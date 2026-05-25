@@ -25,9 +25,9 @@ export class AuthService {
                 const encrypter = new JSEncrypt();
                 encrypter.setPublicKey(publicKeyResponse.publicKey);
                 const bodyEncrypted = encrypter.encrypt(email+':'+password);
-                const jsonBody = {value: bodyEncrypted}
+                const jsonBody = {credentialEncripted: bodyEncrypted}
                 if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');
-                return this.http.post<LoginResponse>(`${this.url}/users/login`,bodyEncrypted);
+                return this.http.post<LoginResponse>(`${this.url}/users/login`,jsonBody);
             })
         );
     }
