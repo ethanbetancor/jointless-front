@@ -1,3 +1,6 @@
+.body{
+    background-color: #F5F5DC;
+}
 .center-buttons{
     display: flex;
     justify-content: center;
