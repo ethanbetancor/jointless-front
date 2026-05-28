@@ -27,7 +27,7 @@ export class AuthService {
                 const bodyEncrypted = encrypter.encrypt(email+':'+password);
                 const jsonBody = {credentialEncripted: bodyEncrypted}
                 if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');
-                return this.http.post<LoginResponse>(`${this.url}/users/login`,jsonBody);
+                return this.http.post<LoginResponse>(`${this.url}/api/v1/users/login`,jsonBody);
             })
         );
     }
@@ -49,8 +49,22 @@ export class AuthService {
                     newPassword: bodyEncrypted,
                     credentialEncripted: credentials
                 };
-                return this.http.post(`${this.url}/users/change-password`,jsonBody);
+                return this.http.post(`${this.url}/api/v1/users/change-password`,jsonBody);
             })
         );
     }
+
+    getLevel(id: number) {
+        const credentials = localStorage.getItem('credentials');
+
+        if (!credentials) {
+            throw new Error('No credentials stored');
+        }
+        const jsonBody = {
+            id: id,
+            credentialEncripted: credentials
+        };
+        return this.http.post(`${this.url}/api/v1/lvl/get`,jsonBody);
+    }
+
 }
