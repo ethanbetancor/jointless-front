@@ -44,9 +44,9 @@ export class SignUpComponent {
                 next: (key) => {
                     const encryptor = new JSEncrypt();
                     encryptor.setPublicKey(key.publicKey);
-                    const body = {value: encryptor.encrypt(this.email() + ":" + this.username() + ":" + this.password())}
+                    const body = {credentialEncripted: encryptor.encrypt(this.email() + ":" + this.username() + ":" + this.password())}
                     // const body = encryptor.encrypt(this.email() + ":" + this.username() + ":" + this.password());
-                    this.http.post<ResponseSucceed>('http://localhost:8080/users/register', body).subscribe({
+                    this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
                         next: (response) => {
 
                             alert(response.message);
@@ -73,6 +73,11 @@ export class SignUpComponent {
             this.usernameError.set('El username es obligatorio');
             return false;
         }
+
+        if (this.username().includes(':')) {
+            this.usernameError.set('El username no puede contener dos puntos ":"');
+            return false;
+        }
         this.usernameError.set('');
         return true
     }
@@ -90,6 +95,11 @@ export class SignUpComponent {
             return false;
         }
 
+        if (this.email().includes(':')) {
+            this.emailError.set('El email no puede contener dos puntos ":"');
+            return false;
+        }
+
         this.emailError.set('');
         return true;
     }
@@ -103,6 +113,10 @@ export class SignUpComponent {
 
         if (!/\d/.test(passwordValue)) {
             this.passwordError.set('La contraseña debe incluir 1 número');
+            return false;
+        }
+        if (this.password().includes(':')) {
+            this.passwordError.set('La contraseña no puede contener dos puntos ":"');
             return false;
         }
         if (passwordValue != this.confirmPasswd()) return false
