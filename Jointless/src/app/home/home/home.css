@@ -1,0 +1,61 @@
+.center-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    width: 100%;
+    box-sizing: border-box;
+}
+.buttons-container{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    position: relative;
+    width: 450px;
+}
+.column-buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+}
+.column-button-left{
+    margin-right: auto;
+}
+.column-button-right{
+    margin-left: auto;
+}
+.wrapper-button{
+    position: relative;
+    width: 96px;
+    height: 96px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.windowHover{
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    width: 250px;
+    color: #ecf0f1;
+    background-color: #2c3e50;
+    border-radius: 8px;
+    z-index: 9999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 12px 16px;
+    pointer-events: none;
+}
+.column-button-left .windowHover{
+    left: 165px;
+    transform: translateY(-50%);
+}
+.column-button-right .windowHover{
+    right: 165px;
+    transform: translateY(-50%);
+}
+.wrapper-button:hover .windowHover{
+    visibility: visible;
+    opacity: 1;
+}
