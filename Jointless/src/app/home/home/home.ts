@@ -4,6 +4,7 @@ import { Title , Meta} from '@angular/platform-browser';
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from '../../auth/auth.service';
+import { IdLevel } from '../../service/id_lvl.service';
 //import del servicio signal id
 
 interface LvlResponse{
@@ -37,6 +38,7 @@ export class Home implements OnInit{
   private router = inject(Router); 
   private authService = inject(AuthService);
   private http = inject(HttpClient);
+  private serviceId = inject(IdLevel);
   exercises = signal<LvlResponse[]>([]);
 
   categorysButtons = computed<CategoryButton[]>(()=>{
@@ -88,7 +90,8 @@ export class Home implements OnInit{
     this.http.post<LvlResponse>('/api/v1/lvl/get',jsonBody).subscribe({
       next: (response)=>{
         alert("Credenciales válidas "+response.id);
-        //this.router.navigateByUrl('/exercise');
+        this.serviceId.setId(response.id);
+        this.router.navigateByUrl('/exercise');
       }, error: (error)=>{
         if (error.status === 404)alert('Ejercicio no accesible');
         alert('Error del servidor');
@@ -124,12 +127,7 @@ export class Home implements OnInit{
         };
     this.http.post<LvlResponse[]>('/api/v1/lvl/get-all',jsonBody).subscribe({
       next: (response: LvlResponse[])=>{
-
-alert("Credenciales válidas "+response);
-        this.exercises.set(response);
-        console.log(this.exercises());
-        
-        
+        this.exercises.set(response);   
       }, error: (error)=>{
         if (error.status === 404)alert('Ejercicio no accesible');
         alert('Error del servidor');
