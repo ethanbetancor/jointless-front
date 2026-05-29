@@ -10,6 +10,16 @@ interface LoginResponse{
   message: string,
   username: string
 }
+interface LvlResponse{ 
+  level: {
+    id: number,
+    title: string,
+    description: string,
+    category: string,
+    starterCode: string
+  },
+  isPassed: true
+}
 
 @Injectable({
     providedIn: 'root'
@@ -64,7 +74,7 @@ export class AuthService {
             id: id,
             credentialEncripted: credentials
         };
-        return this.http.post(`${this.url}/api/v1/lvl/get`,jsonBody);
+        return this.http.post<LvlResponse>(`${this.url}/api/v1/lvl/get`,jsonBody);
     }
 
 }

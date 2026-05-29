@@ -22,14 +22,13 @@ interface level{
 })
 export class Get_lvl{
     private http = inject(HttpClient);
-    private id = inject(IdLevel);
-
-    body = {
-        id: this.id.getId(),
-        credentialEncripted: localStorage.getItem('username')
-    }
+    private idSignal = inject(IdLevel);
 
     getLvl(){
-        return this.http.post<levelResponse>('http://localhost:8080/api/lvl/get', this.body);
+        const body = {
+        id: this.idSignal.getId(),
+        credentialEncripted: localStorage.getItem('credentials')
+        }
+        return this.http.post<levelResponse>('http://localhost:8080/api/v1/lvl/get', body);
     }
 }

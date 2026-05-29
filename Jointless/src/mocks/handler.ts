@@ -55,7 +55,7 @@ export const handlers = [
         });
     }),
 
-    http.post('/api/v1/lvl/get-all', async( {request} ) =>{
+    http.post('/api/v1/lvl/get/all', async( {request} ) =>{
 
 
         const values = await request.json();

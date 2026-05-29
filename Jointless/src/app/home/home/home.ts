@@ -5,14 +5,25 @@ import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from '../../auth/auth.service';
 import { IdLevel } from '../../service/id_lvl.service';
-//import del servicio signal id
 
-interface LvlResponse{
-  success: boolean;
-  message: string;
-  categoria: string;
+interface Level {
   id: number;
+  title: string;
+  description: string;
+  category: string;
+  starterCode: string;
 }
+
+interface LvlResponse {
+  level: Level;
+  isPassed: boolean;
+}
+
+interface LvlAllResponse {
+  listLevels: LvlResponse[];
+}
+
+
 
 interface CategoryButton{
   name: string;
@@ -20,10 +31,6 @@ interface CategoryButton{
   infoHover: LvlResponse | null;
   exercisesNumber: number;
   percentageCompleted: number;
-}
-
-interface LvlAllResponse{
-  results: LvlResponse[];
 }
 
 @Component({
@@ -39,25 +46,28 @@ export class Home implements OnInit{
   private authService = inject(AuthService);
   private http = inject(HttpClient);
   private serviceId = inject(IdLevel);
-  exercises = signal<LvlResponse[]>([]);
+  private url = 'http://localhost:8080';
+  exercises = signal<LvlAllResponse>({
+  listLevels: []
+});
 
   categorysButtons = computed<CategoryButton[]>(()=>{
     const list = this.exercises();
-    if (list.length===0)return [];
+    if (list.listLevels.length===0)return [];
     const groups: { [key:string]:LvlResponse[]}={};
-    list.forEach(item=>{
-      if (!groups[item.categoria])groups[item.categoria]=[];
-      groups[item.categoria].push(item);
+    list.listLevels.forEach(item=>{
+      if (!groups[item.level.category])groups[item.level.category]=[];
+      groups[item.level.category].push(item);
     });
     return Object.keys(groups).map(categoryName=>{
       const elements = groups[categoryName];
-      const totalTrue = elements.filter(exercise=>exercise.success).length;
-      const totalTFalse = elements.filter(exercise=>!exercise.success).length;
+      const totalTrue = elements.filter(exercise=>exercise.isPassed).length;
+      const totalTFalse = elements.filter(exercise=>!exercise.isPassed).length;
       let colorClass: 'verde' | 'gris' | 'amarillo';
       if (totalTrue===elements.length)colorClass='verde';
       else if (totalTFalse===elements.length)colorClass='gris';
       else colorClass='amarillo';
-      const infoHover=elements.find(exercise=>!exercise.success)||null;
+      const infoHover=elements.find(exercise=>!exercise.isPassed)||null;
       return {
         name: categoryName,
         colorClass,
@@ -68,35 +78,34 @@ export class Home implements OnInit{
     });
   });
   goToExercise(id:number){
-    // this.authService.getLevel(id).subscribe({
-    //   next: (response) =>{
-    //     alert("Credenciales válidas");
-    //     //carmbiar signal id
-    //     this.router.navigateByUrl('/exercise');
-    //   }, error: (error)=>{
-    //     if (error.status === 404)alert('Ejercicio no accesible');
-    //     alert('Error del servidor');
-    //   }
-    // })
-    const credentials = localStorage.getItem('credentials');
-
-        if (!credentials) {
-            throw new Error('No credentials stored');
-        }
-        const jsonBody = {
-            id: id,
-            credentialEncripted: credentials
-        };
-    this.http.post<LvlResponse>('/api/v1/lvl/get',jsonBody).subscribe({
-      next: (response)=>{
-        alert("Credenciales válidas "+response.id);
-        this.serviceId.setId(response.id);
+    this.authService.getLevel(id).subscribe({
+      next: (response) =>{
+        this.serviceId.setId(response.level.id);
         this.router.navigateByUrl('/exercise');
       }, error: (error)=>{
         if (error.status === 404)alert('Ejercicio no accesible');
         alert('Error del servidor');
       }
     })
+    // const credentials = localStorage.getItem('credentials');
+
+    //     if (!credentials) {
+    //         throw new Error('No credentials stored');
+    //     }
+    //     const jsonBody = {
+    //         id: id,
+    //         credentialEncripted: credentials
+    //     };
+    // this.http.post<LvlResponse>('/api/v1/lvl/get',jsonBody).subscribe({
+    //   next: (response)=>{
+    //     alert("Credenciales válidas "+response.id);
+    //     this.serviceId.setId(response.id);
+    //     this.router.navigateByUrl('/exercise');
+    //   }, error: (error)=>{
+    //     if (error.status === 404)alert('Ejercicio no accesible');
+    //     alert('Error del servidor');
+    //   }
+    // })
   }
 
   borderGradient(buttons:CategoryButton){
@@ -125,8 +134,8 @@ export class Home implements OnInit{
         const jsonBody = {
             credentialEncripted: credentials
         };
-    this.http.post<LvlResponse[]>('/api/v1/lvl/get-all',jsonBody).subscribe({
-      next: (response: LvlResponse[])=>{
+    this.http.post<LvlAllResponse>(`${this.url}/api/v1/lvl/get/all`,jsonBody).subscribe({
+      next: (response: LvlAllResponse)=>{
         this.exercises.set(response);   
       }, error: (error)=>{
         if (error.status === 404)alert('Ejercicio no accesible');

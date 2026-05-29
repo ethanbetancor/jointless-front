@@ -7,7 +7,7 @@ import { http } from 'msw';
 
 interface exerciseResponse {
     message: string;
-    passed: boolean;
+    success: boolean;
 }
 
 
@@ -39,22 +39,23 @@ export class ExerciseComponent {
             }
         })
     }
-    message = signal('perfe');
-    correct = signal(true);
+    message = signal('');
+    correct = signal(false);
 
     
 
-    body = {
-        levelId: this.id,
-        code: this.answer(),
-        credentialsEncrypted: localStorage.getItem("username")
-    };
+    
 
     send() {
-        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', this.body).subscribe({
+        const body = {
+        code: this.answer(),
+        levelId: this.id,
+        credentialsEncrypted: localStorage.getItem("credentials")
+    };
+        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', body).subscribe({
             next: (response) => {
                 this.message.set(response.message);
-                this.correct.set(response.passed);
+                this.correct.set(response.success);
             },
             error: (error) => {
 
