@@ -1,14 +1,12 @@
 <div class="min-h-screen bg-white px-12 py-14">
   <section class="max-w-6xl mx-auto">
 
-    <button
-      class="mb-10 bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl transition"
-        (click)="goBack()"
-      >
+    <button class="mb-10 bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl transition"
+      (click)="goBack()">
       Volver
     </button>
     <h1 class="text-4xl font-bold text-slate-900 mb-8">
-        Ejercicio {{ id }}
+      {{title()}}
     </h1>
 
     <p class="text-sm tracking-widest text-slate-500 font-semibold mb-6">
@@ -16,7 +14,7 @@
     </p>
 
     <h1 class="text-2xl md:text-3xl leading-relaxed text-black mb-12">
-      Enunciado de ejemplo:
+      {{description()}}
     </h1>
 
     <label class="block text-lg font-bold text-black mb-2">
@@ -25,51 +23,40 @@
 
     <textarea
       class="w-full h-80 resize-y rounded-xl border border-slate-300 p-6 text-lg font-mono text-slate-700 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-      placeholder="Escribe tu solución aquí..."
-        [value]="answer()" (input)="answer.set(answerValue.value)"
-        (keydown)="autocomplete($event, answerValue)"
-        (input)="change()"
-        #answerValue></textarea>
+      placeholder="Escribe tu solución aquí..." [value]="answer()" (input)="answer.set(answerValue.value)"
+      (keydown)="autocomplete($event, answerValue)" (input)="change()" #answerValue></textarea>
 
     @if (message()) {
-        <div
-            class="mt-4 rounded-xl border-2 p-4 text-lg font-semibold"
-            [class.border-green-500]="correct()"
-            [class.bg-green-50]="correct()"
-            [class.text-green-700]="correct()"
-            [class.border-red-500]="!correct()"
-            [class.bg-red-50]="!correct()"
-            [class.text-red-700]="!correct()"
-        >
-            {{ message() }}
-        </div>
-        }
+    <div class="mt-4 rounded-xl border-2 p-4 text-lg font-semibold" [class.border-green-500]="correct()"
+      [class.bg-green-50]="correct()" [class.text-green-700]="correct()" [class.border-red-500]="!correct()"
+      [class.bg-red-50]="!correct()" [class.text-red-700]="!correct()">
+      {{ message() }}
+    </div>
+    }
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-14">
       <button
         class="flex items-center justify-center gap-3 bg-blue-400 hover:bg-blue-500 text-white font-bold text-xl py-5 rounded-xl transition"
-        (click)="send()"
-        >
+        (click)="send()">
         <span>➤</span>
         Enviar Respuesta
       </button>
 
       <button
-        class="flex items-center justify-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-black font-bold text-xl py-5 rounded-xl transition"
-      >
+        class="flex items-center justify-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-black font-bold text-xl py-5 rounded-xl transition">
         <span>💡</span>
         Ver Pista
       </button>
     </div>
 
-@if(message()&&correct()) {
-  <div class="mt-14">
-    <button
-       class="w-full flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white font-bold text-xl py-5 rounded-xl transition"
-    >
-      Submit
-    </button>
-  </div>
-}
+    @if(message()&&correct()) {
+    <div class="mt-14">
+      <button
+        class="w-full flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white font-bold text-xl py-5 rounded-xl transition"
+        (click)="goBack()">
+        Submit
+      </button>
+    </div>
+    }
   </section>
 </div>

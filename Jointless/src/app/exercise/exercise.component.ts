@@ -2,23 +2,15 @@ import { Component, inject, OnInit, signal } from "@angular/core";
 import { IdLevel } from "../service/id_lvl.service";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
+import { Get_lvl } from "../service/get_lvl.service";
+import { http } from 'msw';
 
 interface exerciseResponse {
     message: string;
     passed: boolean;
 }
 
-interface levelResponse{
-    level:level
-    isPassed:boolean
-}
-interface level{
-    id: number,
-    title: string,
-    description: string,
-    category: string,
-    starterCode: string
-}
+
 
 
 @Component({
@@ -26,23 +18,40 @@ interface level{
     templateUrl: 'exercise.component.html',
 })
 export class ExerciseComponent {
+
     private router = inject(Router);
     private http = inject(HttpClient);
+
     idInject = inject(IdLevel);
+    lvlInject = inject(Get_lvl);
+
     id = this.idInject.getId();
     title = signal('');
+    description = signal('');
     answer = signal('');
 
+    ngOnInit(){
+        this.lvlInject.getLvl().subscribe({
+            next: (response)=>{
+                this.title.set(response.level.title);
+                this.description.set(response.level.description);
+                this.answer.set(response.level.starterCode);
+            }
+        })
+    }
     message = signal('perfe');
     correct = signal(true);
+
+    
 
     body = {
         levelId: this.id,
         code: this.answer(),
         credentialsEncrypted: localStorage.getItem("username")
     };
+
     send() {
-        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions', this.body).subscribe({
+        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', this.body).subscribe({
             next: (response) => {
                 this.message.set(response.message);
                 this.correct.set(response.passed);
