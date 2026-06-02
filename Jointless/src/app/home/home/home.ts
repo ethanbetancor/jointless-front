@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from '../../auth/auth.service';
 import { IdLevel } from '../../service/id_lvl.service';
+import { Footer } from "../../shared/footer/footer";
 
 interface Level {
   id: number;
@@ -35,7 +36,7 @@ interface CategoryButton{
 
 @Component({
   selector: 'home',
-  imports: [Header],
+  imports: [Header, Footer],
   templateUrl: './home.html',
   styleUrl: './home.css',
   standalone: true,
