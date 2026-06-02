@@ -5,7 +5,7 @@ import { Injectable, signal } from "@angular/core";
     providedIn: 'root'
 })
 export class IdLevel{
-    private id = signal(0);
+    private id = signal(Number(localStorage.getItem('levelId')) || 0);
 
     getId(): number{
         return this.id();
@@ -13,6 +13,7 @@ export class IdLevel{
 
     setId(id:number){
         this.id.set(id);
+        localStorage.setItem('levelId', id.toString());
     }
 }
 
