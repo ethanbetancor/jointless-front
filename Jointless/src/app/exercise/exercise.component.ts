@@ -3,7 +3,9 @@ import { IdLevel } from "../service/id_lvl.service";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { Get_lvl } from "../service/get_lvl.service";
-import { http } from 'msw';
+import { FormsModule } from "@angular/forms";
+import { MonacoEditorModule } from "ngx-monaco-editor-v2";
+
 
 interface exerciseResponse {
     message: string;
@@ -15,10 +17,21 @@ interface exerciseResponse {
 
 @Component({
     selector: 'exercise-page',
+    standalone: true,
     templateUrl: 'exercise.component.html',
+    imports: [FormsModule, MonacoEditorModule]
 })
 export class ExerciseComponent {
 
+    editorOptions = {
+  theme: "vs-dark",
+  language: "java",
+  automaticLayout: true,
+  wordWrap: "on",
+  minimap: {
+    enabled: false
+  }
+};
     private router = inject(Router);
     private http = inject(HttpClient);
 
@@ -30,9 +43,9 @@ export class ExerciseComponent {
     description = signal('');
     answer = signal('');
 
-    ngOnInit(){
+    ngOnInit() {
         this.lvlInject.getLvl().subscribe({
-            next: (response)=>{
+            next: (response) => {
                 this.title.set(response.level.title);
                 this.description.set(response.level.description);
                 this.answer.set(response.level.starterCode);
@@ -42,16 +55,19 @@ export class ExerciseComponent {
     message = signal('');
     correct = signal(false);
 
-    
 
-    
+    onInput(value: string) {
+        this.answer.set(value);
+        this.change();
+    }
+
 
     send() {
         const body = {
-        code: this.answer(),
-        levelId: this.id,
-        credentialsEncrypted: localStorage.getItem("credentials")
-    };
+            code: this.answer(),
+            levelId: this.id,
+            credentialsEncrypted: localStorage.getItem("credentials")
+        };
         this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', body).subscribe({
             next: (response) => {
                 this.message.set(response.message);
@@ -66,51 +82,10 @@ export class ExerciseComponent {
         this.router.navigateByUrl('home');
     }
 
-    change(){
+    change() {
         this.message.set('');
         this.correct.set(false);
     }
 
-    autocomplete(tecla: KeyboardEvent, textarea: HTMLTextAreaElement) {
-        let apertura = '';
-        let cierre = '';
 
-        switch (tecla.key) {
-            case '{':
-                apertura = '{';
-                cierre = '}';
-                break;
-
-            case '(':
-                apertura = '(';
-                cierre = ')';
-                break;
-
-            case '[':
-                apertura = '[';
-                cierre = ']';
-                break;
-
-            default:
-                return;
-        }
-
-        tecla.preventDefault();
-
-        const principio = textarea.selectionStart;
-        const fin = textarea.selectionEnd;
-        const value = textarea.value;
-
-        const newValue =
-            value.substring(0, principio) +
-            apertura +
-            cierre +
-            value.substring(fin);
-        textarea.value = newValue;
-        this.answer.set(newValue);
-
-        textarea.selectionStart = principio + 1;
-        textarea.selectionEnd = principio + 1;
-
-    }
 }

@@ -21,10 +21,14 @@
       Tu Respuesta
     </label>
 
-    <textarea
-      class="w-full h-80 resize-y rounded-xl border border-slate-300 p-6 text-lg font-mono text-slate-700 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-      placeholder="Escribe tu solución aquí..." [value]="answer()" (input)="answer.set(answerValue.value)"
-      (keydown)="autocomplete($event, answerValue)" (input)="change()" #answerValue></textarea>
+    <div class="w-full max-w-5xl mx-auto h-[300px] border border-slate-900 bg-[#1e1e1e] overflow-hidden">
+      <ngx-monaco-editor
+        style="height: 100%; width: 100%; display: block;"
+        [options]="editorOptions"
+        [ngModel]="answer()"
+        (ngModelChange)="onInput($event)"
+      ></ngx-monaco-editor>
+    </div>
 
     @if (message()) {
     <div class="mt-4 rounded-xl border-2 p-4 text-lg font-semibold" [class.border-green-500]="correct()"
