@@ -44,8 +44,11 @@ export class SignUpComponent {
                 next: (key) => {
                     const encryptor = new JSEncrypt();
                     encryptor.setPublicKey(key.publicKey);
-                    const body = {credentialEncripted: encryptor.encrypt(this.email() + ":" + this.username() + ":" + this.password())}
-                    // const body = encryptor.encrypt(this.email() + ":" + this.username() + ":" + this.password());
+                    const body = {
+                        username:this.username(),
+                        email:this.email(),
+                        passwordEncrypted: encryptor.encrypt(this.password())
+                    }
                     this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
                         next: (response) => {
 
