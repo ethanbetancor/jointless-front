@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, inject, Component, OnInit , signal } from '@angular/core';
 import { Title , Meta} from '@angular/platform-browser';
-import { Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { Router } from "@angular/router";
 import { NgClass } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'user',
-  imports: [NgClass, FormsModule, RouterLink, RouterLinkActive],
+  imports: [NgClass, FormsModule],
   templateUrl: './user.html',
   styleUrl: './user.css',
   standalone: true,

@@ -1,8 +1,4 @@
 <div>
-    <nav class="w-full flex items-center justify-end px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-300 text-white  hover:from-indigo-700 hover:to-indigo-400 transition shadow-lg">
-        <a class="flex items-center gap-2 px-4 py-2 text-black hover:text-gray-900 hover:bg-gray-100 rounded-lg transition" 
-            routerLinkActive="text-blue-500 underline" routerLink="/home">Home</a>
-    </nav>
     <form class="space-y-6" (ngSubmit)="sendValues()" >
         <div>
             @if (errorMessage()) {

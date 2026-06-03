@@ -4,6 +4,7 @@ import { ChangePassword } from './auth/change-password/change-password';
 import { SignUpComponent } from './auth/sign_up/sign_up.component';
 import { Home } from './home/home/home';
 import { User } from './home/user/user';
+import { History } from './home/history/history';
 import { ExerciseComponent } from './exercise/exercise.component';
 
 export const routes: Routes = [
@@ -30,6 +31,10 @@ export const routes: Routes = [
     { 
         path: 'exercise',
         component: ExerciseComponent
+    },
+    { 
+        path: 'history',
+        component: History
     },
     {
         path: '**',

@@ -4,11 +4,13 @@
             <div className="flex items-center gap-4">
               <nav class="w-full flex items-center justify-end px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-300 text-white  hover:from-indigo-700 hover:to-indigo-400 transition shadow-lg">
                 <a class="flex items-center gap-2 px-4 py-2 text-black hover:text-gray-900 hover:bg-gray-100 rounded-lg transition" 
-                    routerLinkActive="text-blue-500 underline" routerLink="/history">Historial</a>
+                    routerLinkActive="text-white underline" routerLink="/home">Home</a>
+                <a class="flex items-center gap-2 px-4 py-2 text-black hover:text-gray-900 hover:bg-gray-100 rounded-lg transition" 
+                    routerLinkActive="text-white underline" routerLink="/history">Historial</a>
                 <a class="flex items-center gap-2 px-4 py-2 text-black hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"  
-                    routerLinkActive="text-blue-500 underline" routerLink="/user">{{userName()}}</a>
+                    routerLinkActive="text-white underline" routerLink="/user">{{userName()}}</a>
                 <a class="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition" 
-                  routerLinkActive="text-blue-500 underline" routerLink="/logout">Salir</a>
+                  routerLinkActive="text-white underline" routerLink="/logout">Salir</a>
               </nav>
             </div>
         </div>
