@@ -12,6 +12,9 @@ interface exerciseResponse {
     success: boolean;
 }
 
+interface clueResponse {
+    clue: string;
+}
 
 
 
@@ -24,14 +27,14 @@ interface exerciseResponse {
 export class ExerciseComponent {
 
     editorOptions = {
-  theme: "vs-dark",
-  language: "java",
-  automaticLayout: true,
-  wordWrap: "on",
-  minimap: {
-    enabled: false
-  }
-};
+        theme: "vs-dark",
+        language: "java",
+        automaticLayout: true,
+        wordWrap: "on",
+        minimap: {
+            enabled: false
+        }
+    };
     private router = inject(Router);
     private http = inject(HttpClient);
 
@@ -42,6 +45,8 @@ export class ExerciseComponent {
     title = signal('');
     description = signal('');
     answer = signal('');
+    clueMessage = signal('');
+    clueUsed = signal(false);
 
     ngOnInit() {
         this.lvlInject.getLvl().subscribe({
@@ -72,6 +77,23 @@ export class ExerciseComponent {
             next: (response) => {
                 this.message.set(response.message);
                 this.correct.set(response.success);
+            },
+            error: (error) => {
+
+            }
+        });
+    }
+
+    clue() {
+        const body = {
+            code: this.answer(),
+            token: localStorage.getItem("token")
+        };
+        this.http.post<clueResponse>('http://localhost:8080/api/v1/clue', body).subscribe({
+            next: (response) => {
+                this.clueUsed.set(true);
+                this.clueMessage.set(response.clue);
+
             },
             error: (error) => {
 
