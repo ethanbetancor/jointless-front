@@ -47,7 +47,7 @@ export class SignUpComponent {
                     const body = {
                         username:this.username(),
                         email:this.email(),
-                        passwordEncrypted: encryptor.encrypt(this.password())
+                        encryptedPassword: encryptor.encrypt(this.password())
                     }
                     this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
                         next: (response) => {
