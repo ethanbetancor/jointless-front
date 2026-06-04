@@ -1,15 +1,20 @@
     <div class="body">
-        @for (exercise of completed().listSolutions; track exercise.solutionId){ 
+        @for (exercise of exercises().listSolutions; track exercise.solutionId){ 
             <div class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-100 hover:shadow-xl transition-shadow">
-                <div class="px-4 py-3 flex items-center justify-between">
-                    <div class="w-2 h-2 bg-white rounded-full">
-                        {{getSignal()}}
+                <div class="px-4 py-3 flex items-center justify-between bg-white">
+                    <div class="px-3 py-1 text-sm font-semibold bg-gray-100 rounded-full">
+                        {{ statement()[exercise.levelId] }}
+                    </div>
+                </div>
+                <div class="px-4 py-3 flex items-center justify-between bg-white">
+                    <div class="px-3 py-1 text-sm font-semibold bg-gray-100 rounded-full">
+                        {{ titles()[exercise.levelId] }}
                     </div>
                 </div>
 
                 <div class="p-4">
                     <h3 class="font-bold text-gray-900 mb-3 text-sm leading-snug">
-                        {{getTitle(exercise.levelId)}}
+                        
                     </h3>
 
                     <!-- {/* Código */} -->
