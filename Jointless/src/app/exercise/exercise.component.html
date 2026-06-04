@@ -34,7 +34,7 @@
     </div>
     }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-14">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-14 items-start">
       <button
         class="flex items-center justify-center gap-3 bg-blue-400 hover:bg-blue-500 text-white font-bold text-xl py-5 rounded-xl transition"
         (click)="send()">
@@ -42,20 +42,22 @@
         Enviar Respuesta
       </button>
 
-      <button
-        class="flex items-center justify-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-black font-bold text-xl py-5 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
-        (click)="clue()" [disabled]="clueUsed()">
-        <span>💡</span>
-        Ver Pista
-      </button>
+      <div>
+        <button
+          class="w-full flex items-center justify-center gap-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-black font-bold text-xl py-5 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+          (click)="clue()" [disabled]="clueUsed()">
+          <span>💡</span>
+          Ver Pista
+        </button>
 
-      @if (clueMessage()) {
-      <div class="mt-4 rounded-xl border-2 border-yellow-500 bg-yellow-50 text-yellow-800 p-4 text-lg font-semibold">
-        {{ clueMessage() }}
+        @if (clueMessage()) {
+        <div
+          class="w-full mt-4 rounded-xl border-2 border-yellow-500 bg-yellow-50 text-yellow-800 p-4 text-lg font-semibold">
+          {{ clueMessage() }}
+        </div>
+        }
       </div>
-      }
     </div>
-
     @if(message()&&correct()) {
     <div class="mt-14">
       <button
