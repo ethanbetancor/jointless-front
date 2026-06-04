@@ -89,10 +89,13 @@ export class ExerciseComponent {
 
     clue() {
         const body = {
-            code: this.answer(),
-            token: localStorage.getItem("token")
+            userPrompt: this.answer()
         };
-        this.http.post<clueResponse>('http://localhost:8080/api/v1/clue', body).subscribe({
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            authorization: `Bearer ${token}`
+        });
+        this.http.post<clueResponse>('http://localhost:8080/api/v1/ai/clue', body,{headers}).subscribe({
             next: (response) => {
                 this.clueUsed.set(true);
                 this.clueMessage.set(response.clue);
