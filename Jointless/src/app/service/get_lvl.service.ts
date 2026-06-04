@@ -1,6 +1,6 @@
 
 
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable, signal } from "@angular/core";
 import { IdLevel } from "./id_lvl.service";
 
@@ -25,10 +25,13 @@ export class Get_lvl{
     private idSignal = inject(IdLevel);
 
     getLvl(){
+        const token = localStorage.getItem('token');
         const body = {
         id: this.idSignal.getId(),
-        credentialEncripted: localStorage.getItem('credentials')
         }
-        return this.http.post<levelResponse>('http://localhost:8080/api/v1/lvl/get', body);
+        const headers = new HttpHeaders({
+            authorization: `Bearer ${token}`
+        });
+        return this.http.post<levelResponse>('http://localhost:8080/api/v1/lvl/get', body,{headers});
     }
 }

@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { switchMap } from "rxjs";
 import { JSEncrypt } from 'jsencrypt';
 
@@ -7,7 +7,7 @@ interface KeyResponse{
     publicKey: string;
 }
 interface LoginResponse{
-  message: string,
+  token: string,
   username: string
 }
 interface LvlResponse{ 
@@ -30,51 +30,55 @@ export class AuthService {
     private url = 'http://localhost:8080';
 
     loginEncrypter (email: string, password: string){
-        return this.http.get<KeyResponse>(`${this.url}/keys/public`)
+        return this.http.get<KeyResponse>(`${this.url}/api/v1/keys/public`)
             .pipe(switchMap((publicKeyResponse)=>{
                 const encrypter = new JSEncrypt();
                 encrypter.setPublicKey(publicKeyResponse.publicKey);
-                const bodyEncrypted = encrypter.encrypt(email+':'+password);
-                const jsonBody = {credentialEncripted: bodyEncrypted}
-                if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');
+                const bodyEncrypted = encrypter.encrypt(password);
+                const jsonBody = {email: email, encryptedPassword: bodyEncrypted}
+                if (!bodyEncrypted) throw new Error('No se pude encriptar los datos con la clave pública');             
                 return this.http.post<LoginResponse>(`${this.url}/api/v1/users/login`,jsonBody);
             })
         );
     }
 
     passwordEncrypter(password: string) {
-        const credentials = localStorage.getItem('credentials');
+        const token = localStorage.getItem('token');
 
-        if (!credentials) {
-            throw new Error('No credentials stored');
+        if (!token) {
+            throw new Error('No token stored');
         }
 
-        return this.http.get<KeyResponse>(`${this.url}/keys/public`)
+        return this.http.get<KeyResponse>(`${this.url}/api/v1/keys/public`)
             .pipe(switchMap((publicKeyResponse) => {
                 const encrypter = new JSEncrypt();
                 encrypter.setPublicKey(publicKeyResponse.publicKey);
                 const bodyEncrypted = encrypter.encrypt(password);
                 if (!bodyEncrypted) throw new Error('No se puede encriptar');
                 const jsonBody = {
-                    newPassword: bodyEncrypted,
-                    credentialEncripted: credentials
+                    newPassword: bodyEncrypted
                 };
-                return this.http.post(`${this.url}/api/v1/users/change-password`,jsonBody);
+                const headers = new HttpHeaders({
+                    authorization: `Bearer ${token}`
+                });
+                return this.http.post(`${this.url}/api/v1/users/change-password`,jsonBody,{headers});
             })
         );
     }
 
     getLevel(id: number) {
-        const credentials = localStorage.getItem('credentials');
+        const token = localStorage.getItem('token');
 
-        if (!credentials) {
-            throw new Error('No credentials stored');
+        if (!token) {
+            throw new Error('No token stored');
         }
         const jsonBody = {
-            id: id,
-            credentialEncripted: credentials
+            id: id
         };
-        return this.http.post<LvlResponse>(`${this.url}/api/v1/lvl/get`,jsonBody);
+        const headers = new HttpHeaders({
+            authorization: `Bearer ${token}`
+        });
+        return this.http.post<LvlResponse>(`${this.url}/api/v1/lvl/get`,jsonBody,{headers});
     }
 
 }

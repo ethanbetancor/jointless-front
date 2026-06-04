@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { IdLevel } from "../service/id_lvl.service";
 import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Get_lvl } from "../service/get_lvl.service";
 import { FormsModule } from "@angular/forms";
 import { MonacoEditorModule } from "ngx-monaco-editor-v2";
@@ -63,12 +63,15 @@ export class ExerciseComponent {
 
 
     send() {
+        const token = localStorage.getItem('token');
         const body = {
             code: this.answer(),
-            levelId: this.id,
-            credentialsEncrypted: localStorage.getItem("credentials")
+            levelId: this.id
         };
-        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', body).subscribe({
+        const headers = new HttpHeaders({
+            authorization: `Bearer ${token}`
+        });
+        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', body,{headers}).subscribe({
             next: (response) => {
                 this.message.set(response.message);
                 this.correct.set(response.success);

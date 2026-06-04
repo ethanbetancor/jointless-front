@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, inject, Component, OnInit, computed, signal } from '@angular/core';
 import { Title , Meta} from '@angular/platform-browser';
 import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from '../../auth/auth.service';
 import { IdLevel } from '../../service/id_lvl.service';
 
@@ -47,8 +47,8 @@ export class Home implements OnInit{
   private serviceId = inject(IdLevel);
   private url = 'http://localhost:8080';
   exercises = signal<LvlAllResponse>({
-  listLevels: []
-});
+    listLevels: []
+  });
 
   categorysButtons = computed<CategoryButton[]>(()=>{
     const list = this.exercises();
@@ -108,7 +108,6 @@ export class Home implements OnInit{
   }
 
   borderGradient(buttons:CategoryButton){
-    const total=buttons.exercisesNumber;
     const completed=buttons.percentageCompleted;
     let backgroundStyle ='';
     if (buttons.colorClass=='amarillo'){
@@ -125,15 +124,15 @@ export class Home implements OnInit{
   private title=inject(Title);
   private meta=inject(Meta);
   ngOnInit(): void {
-    const credentials = localStorage.getItem('credentials');
+    const token = localStorage.getItem('token');
 
-        if (!credentials) {
-            throw new Error('No credentials stored');
-        }
-        const jsonBody = {
-            credentialEncripted: credentials
-        };
-    this.http.post<LvlAllResponse>(`${this.url}/api/v1/lvl/get/all`,jsonBody).subscribe({
+    if (!token) {
+      throw new Error('No token stored');
+    }
+    const headers = new HttpHeaders({
+      authorization: `Bearer ${token}`
+    });
+    this.http.post<LvlAllResponse>(`${this.url}/api/v1/lvl/get/all`,{},{headers}).subscribe({
       next: (response: LvlAllResponse)=>{
         this.exercises.set(response);   
       }, error: (error)=>{

@@ -5,8 +5,7 @@ import { Router } from "@angular/router";
 import { JSEncrypt } from 'jsencrypt';
 
 interface ResponseSucceed {
-    success: boolean,
-    message: string
+    token: string
 }
 interface PublicKey {
     publicKey: string
@@ -40,19 +39,18 @@ export class SignUpComponent {
         const validConfPassw = this.validateConfirmPassw();
 
         if (validPassword && validEmail && validUsername && validConfPassw) {
-            this.http.get<PublicKey>('http://localhost:8080/keys/public').subscribe({
+            this.http.get<PublicKey>('http://localhost:8080/api/v1/keys/public').subscribe({
                 next: (key) => {
                     const encryptor = new JSEncrypt();
                     encryptor.setPublicKey(key.publicKey);
                     const body = {
                         username:this.username(),
                         email:this.email(),
-                        passwordEncrypted: encryptor.encrypt(this.password())
+                        encryptedPassword: encryptor.encrypt(this.password())
                     }
                     this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
                         next: (response) => {
 
-                            alert(response.message);
                             this.route.navigateByUrl('login');
                         },
                         error: (error) => {

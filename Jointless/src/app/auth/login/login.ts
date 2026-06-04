@@ -5,7 +5,6 @@ import { NgClass } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { HttpClient } from "@angular/common/http";
-import { JSEncrypt } from 'jsencrypt';
 
 interface KeyResponse{
     publicKey: string;
@@ -50,21 +49,8 @@ export class Login implements OnInit{
         this.authService.loginEncrypter(this.email(), this.password()).subscribe({
             next: (response) => {
               localStorage.setItem('username', response.username);
-              this.http.get<KeyResponse>(`${this.url}/keys/public`)
-                .subscribe({
-                  next: (publicKeyResponse) => {
-                    const encrypter = new JSEncrypt();
-                    encrypter.setPublicKey(publicKeyResponse.publicKey);
-                    const bodyEncrypted =
-                      encrypter.encrypt(this.email() + ':' + this.password());
-                    if (!bodyEncrypted) throw new Error('No se puede encriptar');
-                    localStorage.setItem('credentials', bodyEncrypted);
-                    alert(response.message);
-                    this.router.navigateByUrl('/home');
-                  }, error: () => {
-                    this.errorMessage.set('Error obteniendo clave pública');
-                  }
-                });
+              localStorage.setItem('token', response.token);
+              this.router.navigateByUrl('/home');
             }, error: (error) => {
               if (error.status === 404) {
                 this.errorMessage.set('Usuario o contraseña incorrectos');

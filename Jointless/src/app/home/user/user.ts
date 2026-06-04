@@ -26,7 +26,6 @@ export class User  implements OnInit{
     private router = inject(Router); 
   
     errorMessage = signal('');
-  
     passwordNew = signal('');
   
       sendValues(){
@@ -49,10 +48,10 @@ export class User  implements OnInit{
           
         this.authService.passwordEncrypter(this.passwordNew()).subscribe({
           next: (response) =>{
-            alert("Contraseña cambiada correctamente");
+            this.errorMessage.set("Contraseña cambiada correctamente");
             this.router.navigateByUrl('/home');
           }, error: (error)=>{
-            if (error.status === 404)this.errorMessage.set('La contraseña nueva es la misma que la antigua');
+            if (error.status === 400)this.errorMessage.set('La contraseña nueva es la misma que la antigua');
             this.errorMessage.set('Error del servidor');
           }
         })
@@ -68,3 +67,5 @@ export class User  implements OnInit{
       this.meta.updateTag({name:'keywords',content:'Jointless,Proyecto,Metrica,User'});
     }
 }
+
+
