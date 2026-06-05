@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Get_lvl } from "../service/get_lvl.service";
 import { FormsModule } from "@angular/forms";
 import { MonacoEditorModule } from "ngx-monaco-editor-v2";
+import { Meta, Title } from "@angular/platform-browser";
 
 
 interface exerciseResponse {
@@ -38,6 +39,9 @@ export class ExerciseComponent {
     private router = inject(Router);
     private http = inject(HttpClient);
 
+    private titleInit=inject(Title);
+    private meta=inject(Meta);
+
     idInject = inject(IdLevel);
     lvlInject = inject(Get_lvl);
 
@@ -49,6 +53,10 @@ export class ExerciseComponent {
     clueUsed = signal(false);
 
     ngOnInit() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            this.router.navigateByUrl('/login');
+        }
         this.lvlInject.getLvl().subscribe({
             next: (response) => {
                 this.title.set(response.level.title);
@@ -56,6 +64,10 @@ export class ExerciseComponent {
                 this.answer.set(response.level.starterCode);
             }
         })
+        this.titleInit.setTitle('Exercise');
+        this.meta.updateTag({name:'description',content:'Este es mi Exercise'});
+        this.meta.updateTag({name:'og:title',content:'Exercise'});
+        this.meta.updateTag({name:'keywords',content:'Jointless,Proyecto,Metrica,Exercise'});
     }
     message = signal('');
     correct = signal(false);

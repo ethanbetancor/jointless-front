@@ -61,6 +61,10 @@ export class User  implements OnInit{
     private meta=inject(Meta);
   
     ngOnInit(): void {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.router.navigateByUrl('/login');
+      }
       this.title.setTitle('User');
       this.meta.updateTag({name:'description',content:'Este es mi User'});
       this.meta.updateTag({name:'og:title',content:'User'});

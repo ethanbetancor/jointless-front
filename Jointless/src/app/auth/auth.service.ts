@@ -20,6 +20,20 @@ interface LvlResponse{
   },
   isPassed: true
 }
+interface LvlAllResponse {
+  listLevels: LvlResponse[];
+}
+interface Solution {
+  solutionId: number,
+  levelId: number,
+  userId: number,
+  code: string,
+  isPassed: true
+}
+
+interface ListSolutions {
+  listSolutions: Solution [];
+}
 
 @Injectable({
     providedIn: 'root'
@@ -79,6 +93,20 @@ export class AuthService {
             authorization: `Bearer ${token}`
         });
         return this.http.post<LvlResponse>(`${this.url}/api/v1/lvl/get`,jsonBody,{headers});
+    }
+    getExercisesByCategory(category: string) {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            throw new Error('No token stored');
+        }
+        const jsonBody = {
+            category: category
+        };
+        const headers = new HttpHeaders({
+            authorization: `Bearer ${token}`
+        });
+        return this.http.post<LvlAllResponse>(`${this.url}/api/v1/lvl/get/category`,jsonBody,{headers});
     }
 
 }

@@ -30,9 +30,6 @@ export class Login implements OnInit{
 
   private router = inject(Router); 
   private authService = inject(AuthService);
-  private http = inject(HttpClient);
-
-  private url = 'http://localhost:8080';
 
   errorMessage = signal('');
 
@@ -54,7 +51,9 @@ export class Login implements OnInit{
             }, error: (error) => {
               if (error.status === 404) {
                 this.errorMessage.set('Usuario o contraseña incorrectos');
-              } else {
+              } else if(error.status === 403) {
+                this.errorMessage.set('Hay que validar el usuario en el correo para hacer login');
+              }else{
                 this.errorMessage.set('Error del servidor');
               }
             }

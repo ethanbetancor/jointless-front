@@ -82,29 +82,10 @@ export class Home implements OnInit{
         this.serviceId.setId(response.level.id);
         this.router.navigateByUrl('/exercise');
       }, error: (error)=>{
-        if (error.status === 404)alert('Ejercicio no accesible');
-        alert('Error del servidor');
+        if (error.status === 404)console.log('Ejercicio no accesible');
+        console.log('Error del servidor');
       }
     })
-    // const credentials = localStorage.getItem('credentials');
-
-    //     if (!credentials) {
-    //         throw new Error('No credentials stored');
-    //     }
-    //     const jsonBody = {
-    //         id: id,
-    //         credentialEncripted: credentials
-    //     };
-    // this.http.post<LvlResponse>('/api/v1/lvl/get',jsonBody).subscribe({
-    //   next: (response)=>{
-    //     alert("Credenciales válidas "+response.id);
-    //     this.serviceId.setId(response.id);
-    //     this.router.navigateByUrl('/exercise');
-    //   }, error: (error)=>{
-    //     if (error.status === 404)alert('Ejercicio no accesible');
-    //     alert('Error del servidor');
-    //   }
-    // })
   }
 
   borderGradient(buttons:CategoryButton){
@@ -127,7 +108,7 @@ export class Home implements OnInit{
     const token = localStorage.getItem('token');
 
     if (!token) {
-      throw new Error('No token stored');
+      this.router.navigateByUrl('/login');
     }
     const headers = new HttpHeaders({
       authorization: `Bearer ${token}`
@@ -136,8 +117,8 @@ export class Home implements OnInit{
       next: (response: LvlAllResponse)=>{
         this.exercises.set(response);   
       }, error: (error)=>{
-        if (error.status === 404)alert('Ejercicio no accesible');
-        alert('Error del servidor');
+        if (error.status === 404)console.log('Ejercicio no accesible');
+        console.log('Error del servidor');
       }
     })
     this.title.setTitle('Home');

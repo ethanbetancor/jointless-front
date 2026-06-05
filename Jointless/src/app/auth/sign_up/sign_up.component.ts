@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, inject, signal } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { JSEncrypt } from 'jsencrypt';
 
@@ -17,7 +18,8 @@ interface PublicKey {
     imports: [FormsModule],
 })
 
-export class SignUpComponent {
+export class SignUpComponent implements OnInit{
+    
 
     username = signal('');
     password = signal('');
@@ -29,8 +31,13 @@ export class SignUpComponent {
     emailError = signal('');
     confirmPasswdError = signal('');
 
+    userAlreadyRegisteredError = signal('');
+
     private http = inject(HttpClient);
     private route = inject(Router);
+
+    private title=inject(Title);
+    private meta=inject(Meta);
 
     sendValues() {
         const validPassword = this.validatePassword();
@@ -55,7 +62,7 @@ export class SignUpComponent {
                         },
                         error: (error) => {
                             if (error.status === 409) {
-                                alert('Ese usuario ya está registrado');
+                                this.userAlreadyRegisteredError.set('Ese usuario ya está registrado');
                             }
                         }
                     });
@@ -136,5 +143,10 @@ export class SignUpComponent {
         return true;
     }
 
-
+    ngOnInit(): void {
+        this.title.setTitle('Registro');
+        this.meta.updateTag({name:'description',content:'Este es mi Registro'});
+        this.meta.updateTag({name:'og:title',content:'Registro'});
+        this.meta.updateTag({name:'keywords',content:'Jointless,Proyecto,Metrica,Registro'});
+    }
 }
