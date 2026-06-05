@@ -82,7 +82,10 @@ export class ExerciseComponent {
                 this.correct.set(response.success);
             },
             error: (error) => {
-
+                if(error==400){
+                    this.message.set("El contenido no es el esperado");
+                    this.correct.set(false);
+                }
             }
         });
     }
@@ -102,7 +105,9 @@ export class ExerciseComponent {
 
             },
             error: (error) => {
-
+                if(error==400){
+                    this.clueMessage.set("Error solicitando la pista");
+                }
             }
         });
     }
