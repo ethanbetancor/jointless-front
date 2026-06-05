@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { JSEncrypt } from 'jsencrypt';
 
 interface ResponseSucceed {
@@ -15,11 +15,11 @@ interface PublicKey {
 
 @Component({
     templateUrl: 'sign_up.component.html',
-    imports: [FormsModule],
+    imports: [FormsModule,RouterLink, RouterLinkActive],
 })
 
-export class SignUpComponent implements OnInit{
-    
+export class SignUpComponent implements OnInit {
+
 
     username = signal('');
     password = signal('');
@@ -36,8 +36,8 @@ export class SignUpComponent implements OnInit{
     private http = inject(HttpClient);
     private route = inject(Router);
 
-    private title=inject(Title);
-    private meta=inject(Meta);
+    private title = inject(Title);
+    private meta = inject(Meta);
 
     sendValues() {
         const validPassword = this.validatePassword();
@@ -51,8 +51,8 @@ export class SignUpComponent implements OnInit{
                     const encryptor = new JSEncrypt();
                     encryptor.setPublicKey(key.publicKey);
                     const body = {
-                        username:this.username(),
-                        email:this.email(),
+                        username: this.username(),
+                        email: this.email(),
                         encryptedPassword: encryptor.encrypt(this.password())
                     }
                     this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
@@ -145,8 +145,9 @@ export class SignUpComponent implements OnInit{
 
     ngOnInit(): void {
         this.title.setTitle('Registro');
-        this.meta.updateTag({name:'description',content:'Este es mi Registro'});
-        this.meta.updateTag({name:'og:title',content:'Registro'});
-        this.meta.updateTag({name:'keywords',content:'Jointless,Proyecto,Metrica,Registro'});
+        this.meta.updateTag({ name: 'description', content: 'Este es mi Registro' });
+        this.meta.updateTag({ name: 'og:title', content: 'Registro' });
+        this.meta.updateTag({ name: 'keywords', content: 'Jointless,Proyecto,Metrica,Registro' });
     }
+
 }
