@@ -40,7 +40,7 @@ interface LvlAllResponse {
 export class History implements OnInit{
   loading = signal(true);
   private http = inject(HttpClient);
-  private url = 'http://jointless-back-production.up.railway.app';
+  private url = 'http://localhost:8080';
   private router = inject(Router); 
   private serviceId = inject(IdLevel);
   titleExercise = signal('');

@@ -45,7 +45,7 @@ export class Home implements OnInit{
   private authService = inject(AuthService);
   private http = inject(HttpClient);
   private serviceId = inject(IdLevel);
-  private url = 'http://jointless-back-production.up.railway.app';
+  private url = 'http://localhost:8080';
   exercises = signal<LvlAllResponse>({
     listLevels: []
   });
