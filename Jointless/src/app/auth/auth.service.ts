@@ -42,6 +42,7 @@ export class AuthService {
     private http = inject(HttpClient);
 
     private url = 'http://localhost:8080';
+    // http://jointless-back-production.up.railway.app
 
     loginEncrypter (email: string, password: string){
         return this.http.get<KeyResponse>(`${this.url}/api/v1/keys/public`)

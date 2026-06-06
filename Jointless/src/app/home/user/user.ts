@@ -16,6 +16,7 @@ import { AuthService } from '../../auth/auth.service';
 export class User  implements OnInit{
   visible:boolean=true;
   changeType:boolean=true;
+  userTouchedPassword = signal(false);
   
   viewPassword(){
     this.visible= !this.visible;
@@ -25,34 +26,38 @@ export class User  implements OnInit{
     private authService = inject(AuthService);
     private router = inject(Router); 
   
-    errorMessage = signal('');
+    message = signal<string>('');
+    messageType = signal<'success' | 'error' | ''>('');
     passwordNew = signal('');
   
       sendValues(){
   
           if ( !this.passwordNew()){
-            this.errorMessage.set("Completa todos los campos");
+            this.message.set("Completa todos los campos");
             return;
           }
 
           const passwordValue = this.passwordNew();
           if (passwordValue.length < 4) {
-              this.errorMessage.set('La contraseña debe tener mínimo 4 caracteres');
-              return;
+            this.message.set('La contraseña debe tener mínimo 4 caracteres');
+            return;
           }
           if (!/\d/.test(passwordValue)) {
-              this.errorMessage.set('La contraseña debe incluir 1 número');
-              return;
+            this.message.set('La contraseña debe incluir 1 número');
+            return;
           }
-          this.errorMessage.set('');
+          this.message.set('');
           
         this.authService.passwordEncrypter(this.passwordNew()).subscribe({
-          next: (response) =>{
-            this.errorMessage.set("Contraseña cambiada correctamente");
-            this.router.navigateByUrl('/home');
+          next: () =>{
+            this.message.set("Contraseña cambiada correctamente");
+            this.passwordNew.set('');
+            this.userTouchedPassword.set(false);
+            this.messageType.set('success');
           }, error: (error)=>{
-            if (error.status === 400)this.errorMessage.set('La contraseña nueva es la misma que la antigua');
-            this.errorMessage.set('Error del servidor');
+            this.messageType.set('error');
+            if (error.status === 400)this.message.set('La contraseña nueva es la misma que la antigua');
+            else this.message.set('Error del servidor');
           }
         })
       }

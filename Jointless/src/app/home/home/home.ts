@@ -68,7 +68,7 @@ export class Home implements OnInit{
       else colorClass='amarillo';
       const infoHover=elements.find(exercise=>!exercise.isPassed)||null;
       return {
-        name: categoryName,
+        name: categoryName.replaceAll('_',' '),
         colorClass,
         infoHover,
         exercisesNumber:elements.length,
