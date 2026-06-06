@@ -22,7 +22,7 @@ export class LogoutComponent implements OnInit {
     const headers = new HttpHeaders({
       authorization: `Bearer ${token}`
     });
-    this.http.post<ResponseLogout>('http://localhost:8080/api/v1/users/logout',{},{headers}).subscribe({
+    this.http.post<ResponseLogout>('http://jointless-back-production.up.railway.app/api/v1/users/logout',{},{headers}).subscribe({
       next: (response) => {
         localStorage.removeItem('username');
         localStorage.removeItem('token');

@@ -45,7 +45,7 @@ export class Home implements OnInit{
   private authService = inject(AuthService);
   private http = inject(HttpClient);
   private serviceId = inject(IdLevel);
-  private url = 'http://localhost:8080';
+  private url = 'http://jointless-back-production.up.railway.app';
   exercises = signal<LvlAllResponse>({
     listLevels: []
   });
@@ -68,7 +68,7 @@ export class Home implements OnInit{
       else colorClass='amarillo';
       const infoHover=elements.find(exercise=>!exercise.isPassed)||null;
       return {
-        name: categoryName,
+        name: categoryName.replaceAll('_',' '),
         colorClass,
         infoHover,
         exercisesNumber:elements.length,

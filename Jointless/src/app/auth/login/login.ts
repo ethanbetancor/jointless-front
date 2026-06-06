@@ -4,11 +4,7 @@ import { RouterLink, RouterLinkActive, Router } from "@angular/router";
 import { NgClass } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { HttpClient } from "@angular/common/http";
 
-interface KeyResponse{
-    publicKey: string;
-}
 
 @Component({
   selector: 'login',

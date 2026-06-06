@@ -41,7 +41,8 @@ interface ListSolutions {
 export class AuthService {
     private http = inject(HttpClient);
 
-    private url = 'http://localhost:8080';
+    private url = 'http://jointless-back-production.up.railway.app';
+    // http://localhost:8080
 
     loginEncrypter (email: string, password: string){
         return this.http.get<KeyResponse>(`${this.url}/api/v1/keys/public`)

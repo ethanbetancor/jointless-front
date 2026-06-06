@@ -18,7 +18,7 @@
                                 </h2>
                             </div>
                         </div>
-                        <div>
+                        <div class="flex flex-col gap-3 p-5">
                             <div class="mt-4">
                                 <h3 class="text-sm font-semibold text-slate-600 mb-2">
                                     Código enviado
@@ -50,7 +50,7 @@
                             </div>
                         </div>
                     </div>
-                 }@else {
+                 }@else if(color()[statement()[exercise.levelId]]=='amarillo'){
                     <div class="overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-xl transition-all duration-300">
                         <div class="bg-yellow-400 p-5">
                             <div class="flex flex-col gap-3">
@@ -62,7 +62,7 @@
                                 </h2>
                             </div>
                         </div>
-                        <div>
+                        <div class="flex flex-col gap-3 p-5">
                             <div class="mt-4">
                                 <h3 class="text-sm font-semibold text-slate-600 mb-2">
                                     Código enviado

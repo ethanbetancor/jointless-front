@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, inject, Component, OnInit, effect, signal } from '@angular/core';
+import { ChangeDetectionStrategy, inject, Component, OnInit, signal } from '@angular/core';
 import { Title , Meta} from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from '../../auth/auth.service';
@@ -12,7 +12,6 @@ interface Solution {
   improvementSuggestion: string,
   isPassed: boolean
 }
-
 interface ListSolutions {
   listSolutions: Solution [];
 }
@@ -23,16 +22,13 @@ interface Level {
   category: string;
   starterCode: string;
 }
-
 interface LvlResponse {
   level: Level;
   isPassed: boolean;
 }
-
 interface LvlAllResponse {
   listLevels: LvlResponse[];
 }
-
 @Component({
   selector: 'history',
   imports: [],
@@ -44,7 +40,7 @@ interface LvlAllResponse {
 export class History implements OnInit{
   loading = signal(true);
   private http = inject(HttpClient);
-  private url = 'http://localhost:8080';
+  private url = 'http://jointless-back-production.up.railway.app';
   private router = inject(Router); 
   private serviceId = inject(IdLevel);
   titleExercise = signal('');
@@ -54,83 +50,67 @@ export class History implements OnInit{
   titles = signal<Record<number, string>>({});
   statement = signal<Record<number, string>>({});
   color = signal<Record<string, string>>({});
-  titlesEffect = effect(() => {
-    const list = this.exercises().listSolutions;
-    if (!list.length) return;
-    const uniqueIds = [...new Set(list.map(x => x.levelId))];
-    uniqueIds.forEach(id => {
-      if (!this.titles()[id]) {
-        this.loadTitle(id);
+  private pendingLevels = 0;
+  private levelCache = new Map<number, any>();
+  loadColor(category: string) {
+    const userSolutions = this.exercises().listSolutions;
+    const completedIds = new Set(userSolutions.filter(s => s.isPassed).map(s => s.levelId));
+    this.authService.getExercisesByCategory(category).subscribe({
+      next: (response) => {
+        const total = response.listLevels.length;
+        const completed = response.listLevels.filter(level => completedIds.has(level.level.id)).length;
+        const color = completed === total ? 'verde' : completed > 0 ? 'amarillo' : 'gris';
+        this.color.update(current => ({
+          ...current,
+          [category]: color
+        }));
       }
     });
-  });
-  loadTitle(id: number) {
+  }
+  goToExercise(id:number){
+    this.authService.getLevel(id).subscribe({
+      next: (response) =>{
+        this.serviceId.setId(response.level.id);
+        this.router.navigateByUrl('/exercise');
+      }, error: (error)=>{
+        if (error.status === 404)console.log('Ejercicio no accesible');
+        console.log('Error del servidor');
+      }
+    })
+  }
+  processData(list: Solution[]) {
+    const uniqueIds = [...new Set(list.map(x => x.levelId))];
+    this.pendingLevels = uniqueIds.length;
+    uniqueIds.forEach(id => this.loadLevelOnce(id));
+  }
+  loadLevelOnce(id: number) {
+    if (this.levelCache.has(id)) return;
     this.authService.getLevel(id).subscribe({
       next: (response) => {
-        this.titles.update(current => ({
-          ...current,
+        this.levelCache.set(id, response.level);
+        this.titles.update(title => ({
+          ...title,
           [id]: response.level.title
         }));
-      }
-    });
-  }
-  statementEffect = effect(() => {
-    const list = this.exercises().listSolutions;
-    if (!list.length) return;
-    const uniqueIds = [...new Set(list.map(x => x.levelId))];
-    uniqueIds.forEach(id => {
-      if (!this.statement()[id]) {
-        this.loadStatement(id);
-      }
-    });
-  });
-  loadStatement(id: number) {
-    this.authService.getLevel(id).subscribe({
-      next: (response) => {
-        this.statement.update(current => ({
-          ...current,
+        this.statement.update(category => ({
+          ...category,
           [id]: response.level.category
         }));
+        this.pendingLevels--;
+        if (this.pendingLevels === 0) {
+          this.checkIfReady();
+        }
+      },
+      error: (error) => {
+        console.log(error); 
       }
     });
   }
-  colorEffect = effect(() => {
-    const categories = Object.values(this.statement());
-
-    const uniqueCategories = [...new Set(categories)];
-
-    uniqueCategories.forEach(category => {
-      if (!this.color()[category]) {
-        this.loadColor(category);
-      }
-    });
-  });
-  loadColor(category: string) {
-  this.authService.getExercisesByCategory(category).subscribe({
-    next: (response) => {
-      const total = response.listLevels.length;
-      const completed = response.listLevels.filter(level => level.isPassed).length;
-      const color = completed === total?'verde':completed>0?'amarillo':'gris';
-      this.color.update(current => ({
-        ...current,
-        [category]: color
-      }));
-      this.loading.set(false);
-    }
-  });
-}
-goToExercise(id:number){
-  this.authService.getLevel(id).subscribe({
-    next: (response) =>{
-      this.serviceId.setId(response.level.id);
-      this.router.navigateByUrl('/exercise');
-    }, error: (error)=>{
-      if (error.status === 404)console.log('Ejercicio no accesible');
-      console.log('Error del servidor');
-    }
-  })
-}
-
+  checkIfReady() {
+    const categories = [...new Set(Object.values(this.statement()))];
+    categories.forEach(cat => this.loadColor(cat));
+    this.loading.set(false);
+  }
   private title=inject(Title);
   private meta=inject(Meta);
   ngOnInit(): void {
@@ -143,6 +123,8 @@ goToExercise(id:number){
     this.http.post<ListSolutions>(`${this.url}/api/v1/solutions/user`,{},{headers}).subscribe({
       next: (response) => {
         this.exercises.set(response);
+        this.processData(response.listSolutions);
+        
       },
       error: () => {
         console.log('Error del servidor');
