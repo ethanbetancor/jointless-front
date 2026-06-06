@@ -46,7 +46,7 @@ export class SignUpComponent implements OnInit {
         const validConfPassw = this.validateConfirmPassw();
 
         if (validPassword && validEmail && validUsername && validConfPassw) {
-            this.http.get<PublicKey>('http://localhost:8080/api/v1/keys/public').subscribe({
+            this.http.get<PublicKey>('https://jointless-back-production.up.railway.app/api/v1/keys/public').subscribe({
                 next: (key) => {
                     const encryptor = new JSEncrypt();
                     encryptor.setPublicKey(key.publicKey);
@@ -55,7 +55,7 @@ export class SignUpComponent implements OnInit {
                         email: this.email(),
                         encryptedPassword: encryptor.encrypt(this.password())
                     }
-                    this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
+                    this.http.post<ResponseSucceed>('https://jointless-back-production.up.railway.app/api/v1/users/register', body).subscribe({
                         next: (response) => {
 
                             this.route.navigateByUrl('login');
