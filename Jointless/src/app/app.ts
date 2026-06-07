@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Footer } from "./shared/footer/footer";
 import { Header } from "./shared/header/header";
-import { Footer } from './shared/footer/footer';
 
 @Component({
   selector: 'app-root',

@@ -6,7 +6,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [RouterLink, RouterLinkActive],
   standalone: true,
   templateUrl: './header.html',
-  styleUrl: './header.css',
 })
 export  class Header implements OnInit{
   userName = signal('');

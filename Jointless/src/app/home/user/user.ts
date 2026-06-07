@@ -9,7 +9,6 @@ import { AuthService } from '../../auth/auth.service';
   selector: 'user',
   imports: [NgClass, FormsModule],
   templateUrl: './user.html',
-  styleUrl: './user.css',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
