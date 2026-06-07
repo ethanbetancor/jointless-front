@@ -39,6 +39,7 @@ interface LvlAllResponse {
 })
 export class History implements OnInit{
   loading = signal(true);
+  noData = signal(false);
   private http = inject(HttpClient);
   private url = 'http://localhost:8080';
   private router = inject(Router); 
@@ -122,9 +123,12 @@ export class History implements OnInit{
     });
     this.http.post<ListSolutions>(`${this.url}/api/v1/solutions/user`,{},{headers}).subscribe({
       next: (response) => {
-        this.exercises.set(response);
-        this.processData(response.listSolutions);
-        
+        if(response.listSolutions.length==0){
+          this.noData.set(true);
+        }else{
+          this.exercises.set(response);
+          this.processData(response.listSolutions);
+        }
       },
       error: () => {
         console.log('Error del servidor');
