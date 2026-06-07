@@ -55,7 +55,7 @@ export class SignUpComponent implements OnInit {
                         email: this.email(),
                         encryptedPassword: encryptor.encrypt(this.password())
                     }
-                    this.http.post<ResponseSucceed>('http://localhost:8080/api/v1/users/register', body).subscribe({
+                    this.http.post<ResponseSucceed>('https://localhost:8080/api/v1/users/register', body).subscribe({
                         next: (response) => {
 
                             this.route.navigateByUrl('login');
