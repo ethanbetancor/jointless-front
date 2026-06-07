@@ -88,7 +88,7 @@ export class ExerciseComponent {
         const headers = new HttpHeaders({
             authorization: `Bearer ${token}`
         });
-        this.http.post<exerciseResponse>('https://jointless-back-production.up.railway.app/api/v1/solutions/submit', body,{headers}).subscribe({
+        this.http.post<exerciseResponse>('http://localhost:8080/api/v1/solutions/submit', body,{headers}).subscribe({
             next: (response) => {
                 this.message.set(response.message);
                 this.correct.set(response.success);
@@ -110,7 +110,7 @@ export class ExerciseComponent {
         const headers = new HttpHeaders({
             authorization: `Bearer ${token}`
         });
-        this.http.post<clueResponse>('https://jointless-back-production.up.railway.app/api/v1/ai/clue', body,{headers}).subscribe({
+        this.http.post<clueResponse>('http://localhost:8080/api/v1/ai/clue', body,{headers}).subscribe({
             next: (response) => {
                 this.clueUsed.set(true);
                 this.clueMessage.set(response.clue);
