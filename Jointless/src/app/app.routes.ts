@@ -50,3 +50,4 @@ export const routes: Routes = [
 
     
 
+export const routes: Routes = [];
