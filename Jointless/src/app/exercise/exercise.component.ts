@@ -51,6 +51,7 @@ export class ExerciseComponent {
     answer = signal('');
     clueMessage = signal('');
     clueUsed = signal(false);
+    responseUsed = signal(false);
 
     ngOnInit() {
         const token = localStorage.getItem('token');
@@ -80,6 +81,7 @@ export class ExerciseComponent {
 
 
     send() {
+        this.responseUsed.set(true);
         const token = localStorage.getItem('token');
         const body = {
             code: this.answer(),
@@ -92,11 +94,13 @@ export class ExerciseComponent {
             next: (response) => {
                 this.message.set(response.message);
                 this.correct.set(response.success);
+                this.responseUsed.set(false);
             },
             error: (error) => {
                 if(error==400){
                     this.message.set("El contenido no es el esperado");
                     this.correct.set(false);
+                    this.responseUsed.set(false);
                 }
             }
         });
